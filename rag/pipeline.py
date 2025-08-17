@@ -1,6 +1,7 @@
 from typing import Optional
 from .config import DATA_DIR, CHUNK_SIZE, CHUNK_OVERLAP, N_RESULTS
-from .io_utils import load_txt_documents, format_sources
+from .io_utils import format_sources
+from .loaders import load_documents
 from .chunking import make_chunk_records
 from .storage import get_collection, add_chunks, query_collection
 from .retriever import dedupe_top_k
@@ -9,7 +10,7 @@ from .generator import answer_from_context
 def build_index(data_dir: Optional[str] = None):
     data_dir = data_dir or DATA_DIR
     collection = get_collection()
-    docs = load_txt_documents(data_dir)
+    docs = load_documents(data_dir)
     if not docs:
         print("No documents found to index.")
         return collection
