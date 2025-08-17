@@ -1,29 +1,56 @@
 from typing import Optional
-from .config import DATA_DIR, CHUNK_SIZE, CHUNK_OVERLAP, N_RESULTS
+from .config import DATA_DIR, CHUNK_SIZE, CHUNK_OVERLAP, N_RESULTS, USE_HYBRID
 from .io_utils import format_sources
 from .loaders import load_documents
 from .chunking import make_chunk_records
 from .storage import get_collection, add_chunks, query_collection
 from .retriever import dedupe_top_k
 from .generator import answer_from_context
+from .hybrid import build_bm25_index, bm25_search, rrf_fuse
 
 def build_index(data_dir: Optional[str] = None):
     data_dir = data_dir or DATA_DIR
     collection = get_collection()
+
     docs = load_documents(data_dir)
     if not docs:
-        print("No documents found to index.")
-        return collection
+         print("No documents found to index.")
+         return collection
     chunked = []
     for d in docs:
-        chunked.extend(make_chunk_records(d["id"], d["text"], CHUNK_SIZE, CHUNK_OVERLAP))
+         chunked.extend(make_chunk_records(d["id"], d["text"], CHUNK_SIZE, CHUNK_OVERLAP))
     add_chunks(chunked, collection)
+    if USE_HYBRID:
+        # Build BM25 index over the same chunks
+        build_bm25_index(chunked)
     print(f"Indexed {len(chunked)} chunks from {len(docs)} files.")
     return collection
 
 def ask(question: str, n_results: int = N_RESULTS):
     collection = get_collection()
-    docs, metas = query_collection(collection, question, n_results)
+    # Vector path
+    v_docs, v_metas = query_collection(collection, question, max(n_results, 20))
+
+    if USE_HYBRID:
+        # BM25 path
+        b_docs, b_metas, _ = bm25_search(question, k=max(n_results, 20))
+        # Fuse via RRF on metas; then re-assemble docs by chosen keys
+        fused = rrf_fuse(v_metas, b_metas, k=60)
+        # Order keys by fused score desc; then map back to (doc, meta)
+        key_to_v = { (m.get("source"), m.get("chunk")): (d, m) for d, m in zip(v_docs, v_metas) }
+        key_to_b = { (m.get("source"), m.get("chunk")): (d, m) for d, m in zip(b_docs, b_metas) }
+        ranked_keys = sorted(fused.items(), key=lambda x: x[1], reverse=True)
+        docs, metas = [], []
+        for (key, _score) in ranked_keys:
+            pair = key_to_v.get(key) or key_to_b.get(key)
+            if pair:
+                d, m = pair
+                docs.append(d); metas.append(m)
+            if len(docs) == n_results:
+                break
+    else:
+        docs, metas = v_docs, v_metas
+
     docs, metas = dedupe_top_k(docs, metas, k=n_results)
     if not docs:
         return "No relevant information found.", "Sources: (none)"
