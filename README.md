@@ -1,7 +1,3 @@
-Perfect ✅ — here’s a **complete, polished `README.md`** you can drop straight into your repo. It’s written to make your project **general-purpose**, not just news-related.
-
----
-
 # 📚 General-Purpose RAG Engine
 
 A modular **Retrieval-Augmented Generation (RAG)** system built with:
