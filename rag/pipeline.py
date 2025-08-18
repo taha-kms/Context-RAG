@@ -26,7 +26,7 @@ def build_index(data_dir: Optional[str] = None):
     print(f"Indexed {len(chunked)} chunks from {len(docs)} files.")
     return collection
 
-def ask(question: str, n_results: int = N_RESULTS):
+def ask(question: str, n_results: int = N_RESULTS, stream_handler=None):
     collection = get_collection()
     # Vector path
     v_docs, v_metas = query_collection(collection, question, max(n_results, 20))
@@ -55,5 +55,5 @@ def ask(question: str, n_results: int = N_RESULTS):
     if not docs:
         return "No relevant information found.", "Sources: (none)"
     context = "\n\n---\n\n".join(docs)
-    answer = answer_from_context(question, context)
+    answer = answer_from_context(question, context, stream_handler=stream_handler)
     return answer, format_sources(metas)

@@ -50,3 +50,8 @@ USE_HYBRID = os.getenv("USE_HYBRID", "false").lower() in ("true", "1", "yes")
 
 # Enable debug logging
 DEBUG = os.getenv("DEBUG", "false").lower() in ("true", "1", "yes")
+
+# === Request robustness ===
+REQUEST_TIMEOUT = float(os.getenv("REQUEST_TIMEOUT", "30"))  # seconds
+MAX_RETRIES = int(os.getenv("MAX_RETRIES", "3"))             # total attempts = 1 + MAX_RETRIES
+STREAM_ANSWERS = os.getenv("STREAM_ANSWERS", "false").lower() in ("true", "1", "yes")
