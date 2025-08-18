@@ -67,13 +67,13 @@ Copy the example file and add your API key:
 cp .env.example .env
 ```
 
-Edit `.env`:
+Edit `.env` and set your OpenAI key:
 
 ```bash
 OPENAI_API_KEY=sk-...
 ```
 
-Optional: tweak chunk size, models, or retrieval settings.
+Optional: tweak chunk size, models, retrieval depth, hybrid mode, or request robustness (`REQUEST_TIMEOUT`, `MAX_RETRIES`, etc).
 
 ---
 
@@ -114,6 +114,7 @@ Sample output:
 ```
 Answer: The paper concludes that hybrid retrieval improves recall by 25%.
 Sources: research_paper.pdf#chunk3
+⏱  1.42s  (streamed=False)
 ```
 
 ### Change retrieval depth
@@ -141,7 +142,7 @@ Try the engine with different kinds of knowledge:
 
 * Hybrid retrieval: enable with `USE_HYBRID=true` in `.env`.
 * Switch models: set `CHAT_MODEL` or `EMBED_MODEL` in `.env`.
-* Run as API: add a small FastAPI wrapper (`api.py`) for `/ask` and `/reindex`.
+* Run as API: you can wrap the pipeline with FastAPI. (`api.py`) for `/ask` and `/reindex`.
 
 
 ---
