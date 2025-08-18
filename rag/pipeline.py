@@ -8,7 +8,7 @@ from .retriever import dedupe_top_k
 from .generator import answer_from_context
 from .hybrid import build_bm25_index, bm25_search, rrf_fuse
 
-def build_index(data_dir: Optional[str] = None):
+def build_index(data_dir: Optional[str] = None, use_hybrid: Optional[bool] = None):
     data_dir = data_dir or DATA_DIR
     collection = get_collection()
 
@@ -20,23 +20,22 @@ def build_index(data_dir: Optional[str] = None):
     for d in docs:
          chunked.extend(make_chunk_records(d["id"], d["text"], CHUNK_SIZE, CHUNK_OVERLAP))
     add_chunks(chunked, collection)
-    if USE_HYBRID:
-        # Build BM25 index over the same chunks
+
+    # Allow CLI to override hybrid mode at runtime
+    hybrid = USE_HYBRID if use_hybrid is None else use_hybrid
+    if hybrid:
         build_bm25_index(chunked)
+
     print(f"Indexed {len(chunked)} chunks from {len(docs)} files.")
     return collection
 
 def ask(question: str, n_results: int = N_RESULTS, stream_handler=None):
     collection = get_collection()
-    # Vector path
     v_docs, v_metas = query_collection(collection, question, max(n_results, 20))
 
     if USE_HYBRID:
-        # BM25 path
         b_docs, b_metas, _ = bm25_search(question, k=max(n_results, 20))
-        # Fuse via RRF on metas; then re-assemble docs by chosen keys
         fused = rrf_fuse(v_metas, b_metas, k=60)
-        # Order keys by fused score desc; then map back to (doc, meta)
         key_to_v = { (m.get("source"), m.get("chunk")): (d, m) for d, m in zip(v_docs, v_metas) }
         key_to_b = { (m.get("source"), m.get("chunk")): (d, m) for d, m in zip(b_docs, b_metas) }
         ranked_keys = sorted(fused.items(), key=lambda x: x[1], reverse=True)
