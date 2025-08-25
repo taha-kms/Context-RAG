@@ -3,6 +3,8 @@ from .services.files import list_documents
 from .services.qa import ask_question
 from .services.uploads import save_files
 from .services.indexing import reindex as do_reindex
+from werkzeug.exceptions import RequestEntityTooLarge
+
 
 bp = Blueprint("main", __name__)
 
@@ -60,3 +62,9 @@ def reindex():
         return render_template("home.html", docs=docs, reindex_result=reidx)
     except Exception as e:
         return render_template("home.html", docs=docs, reindex_error=str(e))
+
+
+@bp.app_errorhandler(RequestEntityTooLarge)
+def handle_file_too_large(e):
+    docs = list_documents()
+    return render_template("home.html", docs=docs, upload_error="File(s) too large. Max size is 50 MB."), 413
