@@ -20,9 +20,43 @@
 
 <section id="ask" aria-labelledby="ask-title">
   <h2 id="ask-title">Ask a Question</h2>
-  <p>Type your question here (coming in Step 6).</p>
-</section>
 
+  <form action="{{ url_for('main.ask') }}" method="post" class="ask-form">
+    <label for="question" class="visually-hidden">Question</label>
+    <textarea id="question" name="question" rows="3" style="width:100%;" placeholder="Type your question...">{{ question or "" }}</textarea>
+    <div style="margin-top:8px;">
+      <input type="submit" value="Ask">
+    </div>
+  </form>
+
+  {% if answer %}
+    <div class="answer" style="margin-top:16px;">
+      <h3>Answer</h3>
+      <div class="card">
+        <p>{{ answer }}</p>
+      </div>
+
+      <h4 style="margin-top:12px;">Sources</h4>
+      {% if sources and sources|length > 0 %}
+        <ul class="list">
+          {% for s in sources %}
+            <li>
+              <code>{{ s.source }}</code>
+              {% if s.chunk is not none %}<small class="muted">#chunk{{ s.chunk }}</small>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No sources returned.</p>
+      {% endif %}
+
+      <details style="margin-top:8px;">
+        <summary>Raw sources string</summary>
+        <pre style="white-space:pre-wrap">{{ sources_raw }}</pre>
+      </details>
+    </div>
+  {% endif %}
+</section>
 <hr />
 
 <section id="upload" aria-labelledby="upload-title">
