@@ -29,7 +29,11 @@
     </div>
   </form>
 
-  {% if answer %}
+  {% if qa_error %}
+    <div class="alert error" style="margin-top:12px;">
+      <strong>Couldn’t answer:</strong> {{ qa_error }}
+    </div>
+  {% elif answer %}
     <div class="answer" style="margin-top:16px;">
       <h3>Answer</h3>
       <div class="card">
@@ -51,12 +55,13 @@
       {% endif %}
 
       <details style="margin-top:8px;">
-        <summary>Raw sources string</summary>
-        <pre style="white-space:pre-wrap">{{ sources_raw }}</pre>
+        <summary>Raw sources</summary>
+        <pre class="wrap">{{ sources_raw }}</pre>
       </details>
     </div>
   {% endif %}
 </section>
+
 <hr />
 
 <section id="upload" aria-labelledby="upload-title">
@@ -82,6 +87,18 @@
     <input type="submit" value="Reindex (no upload)" data-confirm="Rebuild the index now? This may take a moment.">
   </form>
 
+  {% if upload_error %}
+    <div class="alert error" style="margin-top:12px;">
+      <strong>Upload failed:</strong> {{ upload_error }}
+    </div>
+  {% endif %}
+
+  {% if reindex_error %}
+    <div class="alert error" style="margin-top:12px;">
+      <strong>Reindex failed:</strong> {{ reindex_error }}
+    </div>
+  {% endif %}
+
   {% if upload_result %}
     <div style="margin-top:16px;">
       <h3>Upload result{% if upload_result.subdir %} (to <code>{{ upload_result.subdir }}</code>){% endif %}</h3>
@@ -106,11 +123,10 @@
   {% endif %}
 
   {% if reindex_result %}
-    <div style="margin-top:16px;" class="alert">
+    <div style="margin-top:16px;" class="alert success">
       <strong>Reindex complete.</strong>
       <span>Hybrid: {{ 'on' if reindex_result.hybrid else 'off' }} ·
       Time: {{ reindex_result.elapsed_seconds }}s</span>
-      <!-- build_index() persists to PERSIST_DIR and will also rebuild BM25 when hybrid is on. -->
     </div>
   {% endif %}
 </section>

@@ -51,3 +51,25 @@ p { margin: 8px 0; }
 
 form + form { margin-top: 10px; }
 input[type="submit"][disabled] { opacity: 0.6; cursor: not-allowed; }
+
+/* Loading overlay */
+#loading-overlay {
+  position: fixed; inset: 0;
+  background: rgba(255,255,255,0.7);
+  display: none; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+#loading-overlay.active { display: flex; }
+.spinner {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 4px solid #ccc; border-top-color: #333;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Alerts */
+.alert { padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); }
+.alert.error { background: #ffecec; border-color: #ffcdcd; }
+.alert.success { background: #ecffef; border-color: #c6f3cf; }
+.muted { color: var(--muted); }
+pre.wrap { white-space: pre-wrap; word-wrap: break-word; }

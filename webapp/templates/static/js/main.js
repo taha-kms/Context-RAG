@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.debug('RAG Console UI ready');
 
-  // Smooth scroll for header anchors
+  // Smooth scroll
   document.querySelectorAll('header nav a[href^="#"]').forEach(a => {
     a.addEventListener('click', (e) => {
       const id = a.getAttribute('href').slice(1);
@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Disable submit button on forms and optional confirm
+  // Loading overlay + confirm + disable button
+  const overlay = document.getElementById('loading-overlay');
   document.querySelectorAll('form').forEach(form => {
     form.addEventListener('submit', (e) => {
       const btn = form.querySelector('input[type="submit"], button[type="submit"]');
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btn.value !== undefined) btn.value = 'Working...';
         else btn.textContent = 'Working...';
       }
+      if (overlay) overlay.classList.add('active');
     });
   });
 });
