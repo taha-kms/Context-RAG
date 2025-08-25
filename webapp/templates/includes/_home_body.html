@@ -1,6 +1,19 @@
 <section id="documents" aria-labelledby="documents-title">
   <h2 id="documents-title">Available Documents</h2>
-  <p>Documents will appear here.</p>
+
+  {% if docs and docs|length > 0 %}
+    <ul class="list">
+      {% for d in docs %}
+        <li>
+          <code>{{ d.path }}</code>
+          <small class="muted">({{ (d.size // 1024) }} KB)</small>
+        </li>
+      {% endfor %}
+    </ul>
+    <p><small>{{ docs|length }} file{{ 's' if docs|length != 1 else '' }} found.</small></p>
+  {% else %}
+    <div class="alert">No supported documents found yet. Add files under your <code>DATA_DIR</code> and refresh.</div>
+  {% endif %}
 </section>
 
 <hr />

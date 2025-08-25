@@ -4,7 +4,7 @@ from flask import Flask
 def create_app():
     app = Flask(__name__)
     app.config.from_mapping(
-        SECRET_KEY="change-me",  # replace in production
+        SECRET_KEY="change-me",
     )
 
     # Register blueprints
