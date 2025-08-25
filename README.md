@@ -25,7 +25,7 @@ You can load documents in multiple formats (TXT, PDF, DOCX, MD, HTML, CSV), inde
 ## 📦 Project Structure
 
 ```
-rag-news/ (rename to your repo name)
+CONTEXT-RAG/
 ├─ .env.example            # Template for environment variables
 ├─ requirements.txt        # Python dependencies
 ├─ README.md               # This file
