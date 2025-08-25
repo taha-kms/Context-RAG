@@ -19,7 +19,6 @@ You can load documents in multiple formats (TXT, PDF, DOCX, MD, HTML, CSV), inde
 * 💬 Answer generation with **OpenAI GPT models**
 * 📑 Source citations with file + chunk reference
 * 🛠️ Modular design (easy to extend with other LLMs or vector stores)
-* 🖥️ CLI interface + optional API server (FastAPI)
 
 ---
 
@@ -138,12 +137,26 @@ Try the engine with different kinds of knowledge:
 
 ---
 
+## Web App
+
+The repository now provides a Flask-based web interface to:
+
+- list available documents
+- upload and reindex
+- ask questions and view sources
+
+Run with:
+
+```bash
+FLASK_APP=app.py flask run
+# or
+python app.py
+```
+---
 ## 🔧 Advanced
 
 * Hybrid retrieval: enable with `USE_HYBRID=true` in `.env`.
 * Switch models: set `CHAT_MODEL` or `EMBED_MODEL` in `.env`.
-* Run as API: you can wrap the pipeline with FastAPI. (`api.py`) for `/ask` and `/reindex`.
-
 
 ---
 
