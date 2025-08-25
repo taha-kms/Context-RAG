@@ -15,8 +15,7 @@ pandas>=2.2.2         # for CSV/structured handling
 rank-bm25>=0.2.2
 
 # API / Web
-fastapi>=0.112.0
-uvicorn[standard]>=0.30.0
+Flask==3.0.0
 
 # Utilities
 tqdm>=4.66.4          # progress bars
