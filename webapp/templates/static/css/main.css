@@ -47,3 +47,7 @@ p { margin: 8px 0; }
 .list li:last-child { border-bottom: 0; }
 
 .alert { padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); background: #fffbe6; }
+
+
+form + form { margin-top: 10px; }
+input[type="submit"][disabled] { opacity: 0.6; cursor: not-allowed; }

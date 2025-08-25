@@ -79,7 +79,7 @@
   </form>
 
   <form action="{{ url_for('main.reindex') }}" method="post" style="margin-top:12px;">
-    <input type="submit" value="Reindex (no upload)">
+    <input type="submit" value="Reindex (no upload)" data-confirm="Rebuild the index now? This may take a moment.">
   </form>
 
   {% if upload_result %}
