@@ -74,14 +74,17 @@
       </div>
     </div>
     <div style="margin-top:10px;">
-      <input type="submit" value="Upload">
+      <input type="submit" value="Upload &amp; Reindex">
     </div>
+  </form>
+
+  <form action="{{ url_for('main.reindex') }}" method="post" style="margin-top:12px;">
+    <input type="submit" value="Reindex (no upload)">
   </form>
 
   {% if upload_result %}
     <div style="margin-top:16px;">
       <h3>Upload result{% if upload_result.subdir %} (to <code>{{ upload_result.subdir }}</code>){% endif %}</h3>
-
       {% if upload_result.saved and upload_result.saved|length > 0 %}
         <p><strong>Saved {{ upload_result.saved|length }}</strong> file{{ 's' if upload_result.saved|length != 1 else '' }}:</p>
         <ul class="list">
@@ -99,10 +102,15 @@
           {% endfor %}
         </ul>
       {% endif %}
+    </div>
+  {% endif %}
 
-      {% if (not upload_result.saved or upload_result.saved|length == 0) and (not upload_result.skipped or upload_result.skipped|length == 0) %}
-        <p>No files were received.</p>
-      {% endif %}
+  {% if reindex_result %}
+    <div style="margin-top:16px;" class="alert">
+      <strong>Reindex complete.</strong>
+      <span>Hybrid: {{ 'on' if reindex_result.hybrid else 'off' }} ·
+      Time: {{ reindex_result.elapsed_seconds }}s</span>
+      <!-- build_index() persists to PERSIST_DIR and will also rebuild BM25 when hybrid is on. -->
     </div>
   {% endif %}
 </section>
