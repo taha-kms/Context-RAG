@@ -61,5 +61,48 @@
 
 <section id="upload" aria-labelledby="upload-title">
   <h2 id="upload-title">Upload &amp; Reindex</h2>
-  <p>Upload files and rebuild the index (coming soon).</p>
+
+  <form action="{{ url_for('main.upload') }}" method="post" enctype="multipart/form-data">
+    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+      <div>
+        <label for="files"><strong>Choose files</strong></label><br>
+        <input id="files" type="file" name="files" multiple>
+      </div>
+      <div>
+        <label for="subdir">Target subfolder (optional)</label><br>
+        <input id="subdir" type="text" name="subdir" placeholder="e.g. reports/2024">
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <input type="submit" value="Upload">
+    </div>
+  </form>
+
+  {% if upload_result %}
+    <div style="margin-top:16px;">
+      <h3>Upload result{% if upload_result.subdir %} (to <code>{{ upload_result.subdir }}</code>){% endif %}</h3>
+
+      {% if upload_result.saved and upload_result.saved|length > 0 %}
+        <p><strong>Saved {{ upload_result.saved|length }}</strong> file{{ 's' if upload_result.saved|length != 1 else '' }}:</p>
+        <ul class="list">
+          {% for item in upload_result.saved %}
+            <li><code>{{ item.name }}</code> → <code>{{ item.saved_as }}</code></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if upload_result.skipped and upload_result.skipped|length > 0 %}
+        <p><strong>Skipped {{ upload_result.skipped|length }}</strong> file{{ 's' if upload_result.skipped|length != 1 else '' }}:</p>
+        <ul class="list">
+          {% for item in upload_result.skipped %}
+            <li><code>{{ item.name }}</code> — {{ item.reason }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if (not upload_result.saved or upload_result.saved|length == 0) and (not upload_result.skipped or upload_result.skipped|length == 0) %}
+        <p>No files were received.</p>
+      {% endif %}
+    </div>
+  {% endif %}
 </section>
