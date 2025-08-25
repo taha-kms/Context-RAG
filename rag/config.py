@@ -21,7 +21,7 @@ if not OPENAI_API_KEY:
 DATA_DIR = os.getenv("DATA_DIR", "./data")
 
 # Persistent storage location for ChromaDB
-PERSIST_DIR = os.getenv("PERSIST_DIR", "./storage/chroma")
+PERSIST_DIR = os.getenv("PERSIST_DIR", "./storage")
 
 # Name of the collection inside the vector database
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "rag_collection")

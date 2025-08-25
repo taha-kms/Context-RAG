@@ -2,3 +2,9 @@
 data/
 storage/
 __pycache__/
+
+data/*
+!data/.gitkeep
+
+storage/
+!storage/.gitkeep
